@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBD'OSC - Portfolio Dev Web | Métiers du Web & Multimédia</title>
+    
+    <meta name="description" content="WEBD'OSC - Découvrez les métiers du web, le développement web, et l'orientation dans le numérique. Conseils, parcours et présentation des métiers du multimédia et internet à l'IUT.">
+    <meta name="keywords" content="métier du web, développement web, numérique, orientation, conseils, multimédia et internet, IUT, développeur web, parcours dev web, outils développement, métiers du numérique">
+    <meta name="author" content="WEBD'OSC">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="WEBD'OSC - Portfolio Dev Web">
+    <meta property="og:description" content="Découvrez les métiers du web et du développement. Orientation, conseils et parcours dans le numérique.">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg: #000033; 
+            --txt: #E8E8E8; 
+            --nav: #E5D3B3; 
+            --accent: #F1D487; 
+            --card: rgba(255,255,255,0.05);
+            --grid-color: rgba(255,255,255,0.08); 
+            --symbol-opacity: 0.1;
+        }
+        
+        body.light-mode { 
+            --bg: #fdfdfd; 
+            --txt: #000033; 
+            --nav: #dcb680; 
+            --accent: #c6a34f; 
+            --card: #ffffff;
+            --grid-color: rgba(0,0,0,0.08); 
+            --symbol-opacity: 0.07;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--txt); 
+            margin: 0; 
+            padding-bottom: 120px; 
+            transition: background 0.4s, color 0.3s; 
+            position: relative; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+
+        /* BACKGROUND DEV MOTIFS */
+        .background-layer {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -1;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), 
+                              linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+
+        .background-layer::before {
+            content: "< > # { } / < > # { } / < > # { } / < > # { } /";
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 200%; 
+            height: 200%;
+            font-family: 'Courier New', monospace; 
+            font-size: 18px; 
+            font-weight: bold;
+            color: var(--txt); 
+            opacity: var(--symbol-opacity);
+            display: flex; 
+            flex-wrap: wrap; 
+            line-height: 80px; 
+            letter-spacing: 58px; 
+            padding-left: 28px; 
+            pointer-events: none;
+        }
+
+        .header-nav { 
+            background: var(--nav); 
+            margin: 20px; 
+            padding: 10px 30px; 
+            border-radius: 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo-main { 
+            font-weight: 900; 
+            font-size: 1.6rem; 
+            color: #000033; 
+            cursor: pointer; 
+        }
+
+        .nav-center span { 
+            color: #000033; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin: 0 10px; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            padding: 8px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-center span.active-page {
+            background: #FFD700;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .header-right { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .search-bar { 
+            background: #fff; 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            width: 160px; 
+            position: relative;
+        }
+
+        .search-bar input { 
+            border: none; 
+            outline: none; 
+            width: 100%; 
+            font-size: 0.85rem; 
+            color: #333; 
+            background: transparent; 
+        }
+
+        .search-bar i { 
+            color: #333; 
+            cursor: pointer; 
+        }
+
+        /* Autocomplete Dropdown */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: #f5f5f5;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        #theme-toggle { 
+            background: #fff; 
+            border: 1px solid #ccc; 
+            cursor: pointer; 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        /* LAYOUT PRINCIPAL AVEC ARROWS À GAUCHE */
+        .content-layout { 
+            display: flex; 
+            flex-direction: row;
+            align-items: flex-start; 
+            justify-content: center; 
+            gap: 40px; 
+            margin-top: 30px; 
+            padding: 0 50px; 
+        }
+        
+        .arrows-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            min-width: 220px; 
+        }
+
+        .sidebar-arrow { 
+            background: var(--accent); 
+            color: #000033; 
+            padding: 12px 25px; 
+            font-weight: bold; 
+            cursor: pointer;
+            clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%); 
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-arrow:hover {
+            transform: translateX(10px);
+            filter: brightness(1.1);
+        }
+
+        .sidebar-arrow.active {
+            filter: brightness(1.3);
+            transform: translateX(15px);
+        }
+
+        .main-container { 
+            flex: 1; 
+            max-width: 900px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+
+        .video-box { 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            border: 3px solid var(--accent); 
+            border-radius: 15px; 
+            overflow: hidden; 
+            background: #000; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .desc-box { 
+            width: 100%; 
+            margin-top: 25px; 
+            padding: 25px; 
+            border-left: 5px solid var(--accent); 
+            background: var(--card); 
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* MODALE DE PARTAGE */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 3000; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .share-modal { 
+            background: #212121; 
+            color: white; 
+            width: 450px; 
+            border-radius: 12px; 
+            padding: 25px; 
+        }
+
+        .share-header { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 25px; 
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .share-icons { 
+            display: flex; 
+            gap: 20px; 
+            overflow-x: auto; 
+            padding-bottom: 20px; 
+            justify-content: center; 
+        }
+
+        .icon-circle { 
+            text-align: center; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            min-width: 70px; 
+        }
+
+        .icon-circle i { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.6rem; 
+            margin-bottom: 10px; 
+        }
+
+        .link-box { 
+            background: #000; 
+            border: 1px solid #333; 
+            border-radius: 10px; 
+            padding: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .copy-btn { 
+            background: #3ea6ff; 
+            color: #000; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        /* SITEMAP MODAL */
+        .sitemap-modal {
+            background: white;
+            color: #000;
+            width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .sitemap-modal h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .sitemap-modal ol {
+            padding-left: 20px;
+            line-height: 2;
+        }
+
+        .sitemap-modal li {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .close-sitemap-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* FOOTER */
+        footer { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            padding: 15px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--bg); 
+            border-top: 1px solid rgba(128,128,128,0.2); 
+            box-sizing: border-box; 
+            z-index: 1000;
+        }
+
+        .footer-left { 
+            display: flex; 
+            gap: 30px; 
+            align-items: center;
+        }
+
+        .f-link { 
+            color: var(--txt); 
+            text-decoration: underline; 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+        }
+
+        /* CSS LOGO CY CORRIGÉ */
+        .logo-cy { 
+            height: 50px !important; 
+            width: auto !important; 
+            display: block !important; 
+            visibility: visible !important; 
+            opacity: 1 !important;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        /* HOME PAGE PRESENTATION */
+        .home-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-container.active {
+            display: flex;
+        }
+
+        .code-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--accent);
+            pointer-events: none;
+            overflow: hidden;
+            white-space: pre;
+            animation: scrollCode 20s linear infinite;
+        }
+
+        @keyframes scrollCode {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .welcome-box {
+            background: var(--card);
+            padding: 60px;
+            border-radius: 20px;
+            max-width: 800px;
+            border: 3px solid var(--accent);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-box h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: var(--accent);
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .welcome-box p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .welcome-box .keywords {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .start-btn {
+            background: var(--accent);
+            color: #000033;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(241, 212, 135, 0.5);
+        }
+
+        /* ============================================================
+           AJOUT RESPONSIVE (Burger & Adaptabilité)
+           ============================================================ */
+        
+        /* Bouton Burger (masqué par défaut) */
+        .burger-menu {
+            display: none;
+            font-size: 1.8rem;
+            color: #000033;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .content-layout { flex-direction: column; padding: 0 20px; }
+            .arrows-container { flex-direction: row; overflow-x: auto; width: 100%; padding-bottom: 10px; }
+            .sidebar-arrow { clip-path: none; border-radius: 10px; white-space: nowrap; }
+            .welcome-box { padding: 30px; }
+            .welcome-box h1 { font-size: 2rem; }
+            footer { padding: 15px 20px; }
+        }
+
+        @media (max-width: 768px) {
+            .burger-menu { display: block; }
+            .nav-center {
+                display: none; /* Masqué pour le mobile */
+                position: absolute;
+                top: 70px; left: 20px; right: 20px;
+                background: var(--nav);
+                flex-direction: column;
+                padding: 20px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+            .nav-center.mobile-active { display: flex; z-index: 1000; }
+            .nav-center span { margin: 5px 0; text-align: center; width: 100%; }
+            .header-right { gap: 10px; }
+            .search-bar { width: 120px; }
+            .logo-main { font-size: 1.2rem; }
+            .share-modal, .sitemap-modal { width: 90%; }
+            .footer-left { gap: 15px; }
+            .f-link { font-size: 0.8rem; }
+            .logo-cy { height: 35px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="background-layer"></div>
+
+<div class="modal-overlay" id="shareOverlay" onclick="closeShare()">
+    <div class="share-modal" onclick="event.stopPropagation()">
+        <div class="share-header"><span>Partager</span><i class="fas fa-times" style="cursor:pointer" onclick="closeShare()"></i></div>
+        <div class="share-icons">
+            <div class="icon-circle" onclick="getEmbedCode()"><i class="fas fa-code" style="background:#fff; color:#000;"></i>Intégrer</div>
+            <div class="icon-circle" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp" style="background:#25D366;"></i>WhatsApp</div>
+            <div class="icon-circle" onclick="shareOnFacebook()"><i class="fab fa-facebook-f" style="background:#3b5998;"></i>Facebook</div>
+            <div class="icon-circle" onclick="shareOnTwitter()"><i class="fab fa-x-twitter" style="background:#000; border:1px solid #333;"></i>X</div>
+            <div class="icon-circle" onclick="shareByEmail()"><i class="fas fa-envelope" style="background:#777;"></i>Email</div>
+        </div>
+        <div class="link-box">
+            <span id="shareLink" style="font-size:0.85rem; color:#ccc;">https://youtu.be/1SxFJpik7S4</span>
+            <button class="copy-btn" onclick="copyLink()">Copie</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="sitemapOverlay" onclick="closeSitemap()">
+    <div class="sitemap-modal" onclick="event.stopPropagation()">
+        <h2>Sitemap</h2>
+        <ol>
+            <li>Présentation</li>
+            <li>Parcours</li>
+            <li>Métiers</li>
+            <li>Conseils</li>
+            <li>Podcast</li>
+        </ol>
+        <button class="close-sitemap-btn" onclick="closeSitemap()">Fermer</button>
+    </div>
+</div>
+
+<nav class="header-nav">
+    <div class="burger-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
+    <div class="logo-main" onclick="goHome()">WEBD'OSC</div>
+    <div class="nav-center" id="navCenter">
+        <span onclick="showPage('pres')">Présentation</span>
+        <span onclick="showPage('parc')">Parcours</span>
+        <span onclick="showPage('met')">Métiers</span>
+        <span onclick="showPage('pod')">Podcast</span>
+        <span onclick="showPage('cons')">Conseils</span>
+    </div>
+    <div class="header-right">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="rechercher..." oninput="showSuggestions()" onkeyup="if(event.key==='Enter') runSearch()" onfocus="showSuggestions()">
+            <i class="fas fa-search" onclick="runSearch()"></i>
+            <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+        <button id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    </div>
+</nav>
+
+<div class="content-layout">
+    <div class="home-container active" id="homeContainer">
+        <div class="code-background" id="codeBackground"></div>
+        <div class="welcome-box">
+            <h1>Bienvenue sur WEBD'OSC</h1>
+            <p>
+                Découvrez l'univers passionnant du <strong>développement web</strong> et des <strong>métiers du numérique</strong>. 
+                Ce site est votre guide complet pour comprendre les parcours, les compétences et les opportunités 
+                dans le monde du web.
+            </p>
+            <p>
+                Que vous soyez étudiant en quête d'<strong>orientation</strong>, parent souhaitant accompagner votre enfant, 
+                ou simplement curieux des <strong>métiers du web</strong>, vous trouverez ici des témoignages authentiques, 
+                des <strong>conseils pratiques</strong> et une présentation détaillée de la formation <strong>Multimédia et Internet</strong> 
+                dispensée à l'<strong>IUT</strong>.
+            </p>
+            <p>
+                Explorez les différentes facettes du <strong>métier de développeur web</strong>, découvrez les outils essentiels, 
+                et laissez-vous inspirer par des parcours réels dans le <strong>numérique</strong>.
+            </p>
+            <div class="keywords">
+                #DéveloppementWeb #MétiersduWeb #Numérique #Orientation #Conseils #MultimédiaEtInternet #IUT
+            </div>
+            <button class="start-btn" onclick="startExploring()">Commencer l'exploration</button>
+        </div>
+    </div>
+    <div class="arrows-container" id="arrowsArea"></div>
+    <div class="main-container">
+        <div class="video-box">
+            <iframe id="video-player" src="https://www.youtube.com/embed/1SxFJpik7S4" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="desc-box" id="video-desc">Sélectionnez une vidéo pour commencer.</div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-left">
+        <span class="f-link" onclick="openShare()">Partager 🔗</span>
+        <span class="f-link" onclick="openSitemap()">Site Map 🗺️</span>
+    </div>
+    <div class="footer-right">
+        <span style="font-weight:bold; margin-right: 25px;">Sons 🔊</span>
+        <a href="https://cyiut.cyu.fr/" target="_blank" style="display: inline-block !important;">
+            <img src="Logo_IUT_CY.png" alt="Logo CY IUT" class="logo-cy">
+        </a>
+    </div>
+</footer>
+
+<script>
+    /* AJOUT FONCTION BURGER */
+    function toggleMobileMenu() {
+        document.getElementById('navCenter').classList.toggle('mobile-active');
+    }
+
+    const codeSnippets = [
+        "function developWebsite() {",
+        "  const skills = ['HTML', 'CSS', 'JavaScript'];",
+        "  return skills.map(skill => learn(skill));",
+        "}",
+        "",
+        "class Developer {",
+        "  constructor(name, passion) {",
+        "    this.name = name;",
+        "    this.passion = passion;",
+        "  }",
+        "  code() {",
+        "    console.log('Creating amazing websites!');",
+        "  }",
+        "}",
+        "",
+        "const webdev = new Developer('Student', 'Web');",
+        "",
+        "// Routes vers le succès",
+        "const career = {",
+        "  frontend: ['React', 'Vue', 'Angular'],",
+        "  backend: ['Node.js', 'Python', 'PHP'],",
+        "  design: ['Figma', 'Adobe XD', 'Sketch']",
+        "};",
+        "",
+        "function buildFuture() {",
+        "  const passion = true;",
+        "  const learning = 'continuous';",
+        "  if (passion && learning) {",
+        "    return 'Success in Web Development!';",
+        "  }",
+        "}",
+        "",
+        "<div className='portfolio'>",
+        "  <h1>Mon Parcours</h1>",
+        "  <p>De l'apprentissage au métier</p>",
+        "</div>",
+        "",
+        "SELECT * FROM opportunities",
+        "WHERE field = 'Web Development'",
+        "AND passion = true;",
+        "",
+        "git commit -m 'Start your journey'",
+        "git push origin main",
+        "",
+        "",
+        "<nav>Orientation | Métiers | Conseils</nav>",
+    ];
+
+    function generateCodeBackground() {
+        const codeDiv = document.getElementById('codeBackground');
+        const repeatedCode = (codeSnippets.join('\n') + '\n\n').repeat(4);
+        codeDiv.textContent = repeatedCode;
+    }
+
+    const pages = {
+        pres: [
+            {t: "Portrait", id: "1SxFJpik7S4", d: "Découvrez mon profil et qui je suis en tant que développeur web."},
+            {t: "Réalisation", id: "nuhjhqiRJHM", d: "Présentation de mes réalisations et projets web."}
+        ],
+        parc: [
+            {t: "Choix de parcours", id: "S1X76ueIYaY", d: "Comment j'ai choisi mon parcours dans le développement web."},
+            {t: "Parcours d'un dev web", id: "OjVS5UWBROQ", d: "Le cursus IUT et mon parcours complet dans le développement web."}
+        ],
+        met: [
+            {t: "Métier du dev web", id: "VqP2TI6t9jw", d: "Découvrez le métier de développeur web : missions, compétences et quotidien."},
+            {t: "Outils du métiers de développement web", id: "4-g_m2hykZ8", d: "Présentation des outils essentiels utilisés par les développeurs web."},
+            {t: "Pourquoi j'ai choisi le Développement Web", id: "nsL4muz7lMc", d: "Les raisons qui m'ont poussé à choisir le développement web comme carrière."}
+        ],
+        pod: [
+            {t: "L'Interview", id: "ubNYaG_9gIk", d: "Podcast spécial : interview sur mon parcours et mon expérience."}
+        ],
+        cons: [
+            {t: "Conseils parents / Professeur", id: "q9xUPsJ3fSs", d: "Conseils destinés aux parents et professeurs pour accompagner les futurs développeurs."},
+            {t: "Conseils aux futurs dev web", id: "SoNNhuFlrCM", d: "Mes meilleurs conseils pour ceux qui veulent devenir développeur web."}
+        ]
+    };
+
+    let currentVideo = null;
+    let allVideos = [];
+
+    function startExploring() {
+        document.getElementById('homeContainer').classList.remove('active');
+        document.getElementById('arrowsArea').style.display = 'flex';
+        document.querySelector('.main-container').style.display = 'flex';
+        showPage('pres');
+    }
+
+    function goHome() {
+        // Retirer l'indicateur actif de tous les menus
+        document.querySelectorAll('.nav-center span').forEach(span => {
+            span.classList.remove('active-page');
+        });
+        
+        document.getElementById('homeContainer').classList.add('active');
+        document.getElementById('arrowsArea').style.display = 'none';
+        document.querySelector('.main-container').style.display = 'none';
+    }
+
+    // Créer un index de toutes les vidéos pour la recherche
+    function buildSearchIndex() {
+        allVideos = [];
+        for (let k in pages) {
+            pages[k].forEach(v => {
+                allVideos.push({...v, page: k});
+            });
+        }
+    }
+
+    function showPage(key) {
+        // Fermer le menu mobile lors d'un clic sur un lien
+        document.getElementById('navCenter').classList.remove('mobile-active');
+
+        // Retirer l'indicateur actif de tous les menus
+        document.querySelectorAll('.nav-center span').forEach(span => {
+            span.classList.remove('active-page');
+        });
+        
+        // Ajouter l'indicateur actif au menu cliqué
+        const activeSpan = Array.from(document.querySelectorAll('.nav-center span')).find(
+            span => span.getAttribute('onclick').includes(`'${key}'`)
+        );
+        if (activeSpan) {
+            activeSpan.classList.add('active-page');
+        }
+        
+        const area = document.getElementById('arrowsArea');
+        area.innerHTML = "";
+        pages[key].forEach(v => {
+            const arrow = document.createElement('div');
+            arrow.className = 'sidebar-arrow';
+            arrow.innerText = v.t;
+            arrow.onclick = () => loadVideo(v, arrow);
+            arrow.dataset.videoId = v.id;
+            area.appendChild(arrow);
+        });
+        loadVideo(pages[key][0]);
+    }
+
+    function loadVideo(v, clickedArrow) {
+        // Désactiver toutes les vidéos/arrows
+        document.querySelectorAll('.sidebar-arrow').forEach(arrow => {
+            arrow.classList.remove('active');
+        });
+        
+        // Activer l'arrow cliquée
+        if (clickedArrow) {
+            clickedArrow.classList.add('active');
+        } else {
+            // Si pas d'arrow cliquée (premier chargement), activer la première
+            const firstArrow = document.querySelector(`.sidebar-arrow[data-video-id="${v.id}"]`);
+            if (firstArrow) firstArrow.classList.add('active');
+        }
+
+        // Charger la vidéo
+        document.getElementById('video-player').src = "https://www.youtube.com/embed/" + v.id;
+        document.getElementById('video-desc').innerText = v.d;
+        document.getElementById('shareLink').innerText = "https://youtu.be/" + v.id;
+        currentVideo = v;
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const icon = document.querySelector('#theme-toggle i');
+        icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    function openShare() { 
+        document.getElementById('shareOverlay').style.display = 'flex'; 
+    }
+    
+    function closeShare() { 
+        document.getElementById('shareOverlay').style.display = 'none'; 
+    }
+    
+    function copyLink() { 
+        navigator.clipboard.writeText(document.getElementById('shareLink').innerText).then(() => alert("Copié !")); 
+    }
+
+    // Fonctions de partage sur les réseaux sociaux
+    function shareOnWhatsApp() {
+        const url = document.getElementById('shareLink').innerText;
+        window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+    }
+
+    function shareOnFacebook() {
+        const url = document.getElementById('shareLink').innerText;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    }
+
+    function shareOnTwitter() {
+        const url = document.getElementById('shareLink').innerText;
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=Découvrez cette vidéo !`, '_blank');
+    }
+
+    function shareByEmail() {
+        const url = document.getElementById('shareLink').innerText;
+        window.location.href = `mailto:?subject=Vidéo intéressante&body=Je voulais partager cette vidéo avec vous : ${url}`;
+    }
+
+    function getEmbedCode() {
+        const videoId = currentVideo ? currentVideo.id : '1SxFJpik7S4';
+        const embedCode = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        navigator.clipboard.writeText(embedCode).then(() => alert("Code d'intégration copié !"));
+    }
+
+    function openSitemap() {
+        document.getElementById('sitemapOverlay').style.display = 'flex';
+    }
+
+    function closeSitemap() {
+        document.getElementById('sitemapOverlay').style.display = 'none';
+    }
+
+    // Fonction de recherche avec autocomplete
+    function showSuggestions() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const suggestionsDiv = document.getElementById('searchSuggestions');
+        
+        if (input.length === 0) {
+            suggestionsDiv.classList.remove('active');
+            return;
+        }
+
+        const matches = allVideos.filter(v => 
+            v.t.toLowerCase().includes(input) || 
+            v.d.toLowerCase().includes(input)
+        );
+
+        if (matches.length === 0) {
+            suggestionsDiv.classList.remove('active');
+            return;
+        }
+
+        suggestionsDiv.innerHTML = matches.slice(0, 5).map(v => 
+            `<div class="suggestion-item" onclick="selectSuggestion('${v.page}', '${v.id}')">${v.t}</div>`
+        ).join('');
+        
+        suggestionsDiv.classList.add('active');
+    }
+
+    function selectSuggestion(pageKey, videoId) {
+        const video = pages[pageKey].find(v => v.id === videoId);
+        showPage(pageKey);
+        
+        setTimeout(() => {
+            const arrow = document.querySelector(`.sidebar-arrow[data-video-id="${videoId}"]`);
+            loadVideo(video, arrow);
+        }, 100);
+        
+        document.getElementById('searchSuggestions').classList.remove('active');
+        document.getElementById('searchInput').value = '';
+    }
+
+    function runSearch() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        if(!input) return;
+        
+        const match = allVideos.find(v => 
+            v.t.toLowerCase().includes(input) || 
+            v.d.toLowerCase().includes(input)
+        );
+        
+        if (match) {
+            selectSuggestion(match.page, match.id);
+        }
+    }
+
+    // Fermer les suggestions si on clique ailleurs
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-bar')) {
+            document.getElementById('searchSuggestions').classList.remove('active');
+        }
+    });
+
+    window.onload = () => {
+        buildSearchIndex();
+        generateCodeBackground();
+        // Masquer les conteneurs de vidéo au démarrage
+        document.getElementById('arrowsArea').style.display = 'none';
+        document.querySelector('.main-container').style.display = 'none';
+    };
+</script>
+</body>
+</html>d
